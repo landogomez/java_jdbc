@@ -17,7 +17,7 @@ public class ProductoRepositorio implements Repositorio<Producto> {
         List<Producto> productos = new ArrayList<>();
 
         try (Statement stmt = getConnection().createStatement();
-             ResultSet rs = stmt.executeQuery("select p.*, c.nombre as categoria from productos as p" +
+             ResultSet rs = stmt.executeQuery("select p.*, c.nombre as categoria from productos as p " +
                      "inner join categorias as c on (p.id_categoria = c.id)")){
             while (rs.next()) {
                 Producto p = crearProducto(rs);
@@ -35,7 +35,7 @@ public class ProductoRepositorio implements Repositorio<Producto> {
 
         try (PreparedStatement stmt = getConnection().
                 prepareStatement("select p.*, c.nombre as categoria from productos as p " +
-                        "inner join categorias as c on (p.id_categoria = c.id where id = ?")) {
+                        "inner join categorias as c on (p.id_categoria = c.id) where p.id = ?")) {
             stmt.setLong(1,id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -54,7 +54,7 @@ public class ProductoRepositorio implements Repositorio<Producto> {
         if (producto.getId() != null && producto.getId() > 0)
             sql = "UPDATE productos SET nombre = ?, precio=?, id_categoria = ? where id=?";
         else
-            sql = "INSERT INTO productos(nombre, precio, id_categoria,fecha_registro) values(?,?,?)";
+            sql = "INSERT INTO productos(nombre, precio, id_categoria,fecha_registro) values(?,?,?,?)";
 
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)){
 
